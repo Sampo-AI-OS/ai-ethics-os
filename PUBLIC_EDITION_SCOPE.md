@@ -2,7 +2,7 @@
 
 This folder contains the curated public-edition version of AI Ethics OS for the Sampo AI OS portfolio.
 
-It should also be understood as a public Sampo AI OS showcase repository: a clean, collaboration-friendly example of how the broader platform is presented in public.
+It should also be understood as a public Sampo AI OS showcase repository: a clean, reviewable example of how the broader platform is presented in public.
 
 ## Included
 
@@ -38,4 +38,4 @@ In practice, that means this edition does not publish every technically interest
 
 AI Ethics OS is presented here as a project powered by Sampo AI OS.
 
-In portfolio terms, this repository acts as a Sampo AI OS shop window: it should be technically strong, easy to evaluate, and pleasant for others to explore or build on.
+In portfolio terms, this repository acts as a Sampo AI OS shop window: it should be technically strong, easy to evaluate, and clearly presented as a showcase rather than an active collaboration workspace.

@@ -11,6 +11,10 @@ This portfolio copy is a curated public edition. See `PUBLIC_EDITION_SCOPE.md` f
 
 This repository is also intended to function as a public showcase for Sampo AI OS: a clear, reviewable product output from the digital office, not the full internal platform itself.
 
+## Interface Snapshot
+
+![AI Ethics OS UI](media/screenshots/screen-01.jpeg)
+
 ## Quick Evaluation Path
 
 If you want to evaluate the project quickly as a portfolio piece, use this order:
