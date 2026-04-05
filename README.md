@@ -11,6 +11,8 @@ This portfolio copy is a curated public edition. See `PUBLIC_EDITION_SCOPE.md` f
 
 This repository is also intended to function as a public showcase for Sampo AI OS: a clear, reviewable product output from the digital office, not the full internal platform itself.
 
+It should also be read as one domain-specific application layer that sits downstream of a broader governance and ethics direction inside Sampo AI OS. In practical terms, this repository turns high-level governance and evaluation ideas into a concrete EU AI Act-oriented product workflow.
+
 ## Interface Snapshot
 
 ![AI Ethics OS UI](media/screenshots/screen-01.jpeg)
@@ -43,6 +45,8 @@ The application has two core modes:
 This means the public repository demonstrates the scoring product directly while showing only selected parts of the audit architecture.
 
 In the broader Sampo AI OS framing, this repository is one product artifact from the office's solution inventory: public enough to evaluate and reuse, but intentionally curated rather than identical to the full internal production environment.
+
+Within that broader framing, AI Ethics OS can also be understood as a policy-to-product output: a concrete application layer for turning governance, ethics, and evaluative logic into a usable compliance-oriented development and audit tool.
 
 ## Key Capabilities
 
@@ -407,6 +411,9 @@ The project pins `bcrypt==4.0.1` because newer `bcrypt` releases are incompatibl
 
 AI Ethics OS is the application layer.
 Sampo AI OS is the digital office and platform identity behind the broader system.
+
+In portfolio narrative terms, a future DAO or governance-focused Sampo AI OS repository would represent the higher-level decision, policy, and ethics infrastructure.
+AI Ethics OS represents one concrete downstream product artifact from that wider governance direction: a focused interface for making EU AI Act-style obligations more operational and easier to work with in practice.
 
 In this repository, that means the tool is not framed as a passive scorecard. It is intended to actively support teams in building, testing, auditing, and maintaining solutions that stay inside modeled EU AI Act boundaries.
 
