@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ethicsos
+      POSTGRES_USER: ethicsuser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ethicspass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ethicsuser -d ethicsos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-18000}:8000"
+    environment:
+      DATABASE_URL: postgresql://ethicsuser:${POSTGRES_PASSWORD:-ethicspass}@db:5432/ethicsos
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:

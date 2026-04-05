@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Ethics OS — EU AI Act Compliance Assessment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy:        #1B3A6B;
+      --navy-light:  #2B5BA8;
+      --navy-muted:  #E8EEF7;
+      --gold:        #B8860B;
+      --surface:     #FFFFFF;
+      --bg:          #F4F6FA;
+      --border:      #DDE3EF;
+      --text:        #1A202C;
+      --text-muted:  #5A6580;
+      --red:         #B91C1C;
+      --amber:       #B45309;
+      --yellow:      #92400E;
+      --green:       #166534;
+      --red-bg:      #FEF2F2;
+      --amber-bg:    #FFFBEB;
+      --green-bg:    #F0FDF4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ── Header bar ── */
+    .topbar {
+      background: var(--navy);
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #C8A400;
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .topbar-logo {
+      width: 36px; height: 36px;
+      background: #C8A400;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .topbar-title { font-weight: 700; font-size: 1rem; letter-spacing: 0.3px; }
+    .topbar-sub { font-size: 0.7rem; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; text-transform: uppercase; }
+    .topbar-badge {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.85);
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── Hero strip ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #2B5BA8 100%);
+      color: #fff;
+      padding: 2.5rem 0 2rem;
+    }
+    .hero h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .hero p { color: rgba(255,255,255,0.75); font-size: 0.88rem; max-width: 600px; margin-bottom: 0; }
+    .hero-reg {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .reg-chip {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Layout ── */
+    .page-content { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Scenario cards ── */
+    .scenario-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.25rem 1.1rem;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      text-align: left;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .scenario-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--stripe, var(--navy-light));
+      transition: height 0.15s;
+    }
+    .scenario-card:hover { border-color: var(--navy-light); box-shadow: 0 4px 16px rgba(27,58,107,0.1); transform: translateY(-2px); }
+    .scenario-card:hover::before { height: 4px; }
+    .scenario-icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+    .scenario-title { font-weight: 600; font-size: 0.92rem; color: var(--text); margin-bottom: 0.2rem; }
+    .scenario-sub { font-size: 0.76rem; color: var(--text-muted); }
+    .scenario-tag {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* ── Cards ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      background: #FAFBFD;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel-body { padding: 1.25rem; }
+
+    /* ── Form ── */
+    .form-control {
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.88rem;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-control:focus {
+      border-color: var(--navy-light);
+      box-shadow: 0 0 0 3px rgba(43,91,168,0.1);
+    }
+    .form-check-input:checked { background-color: var(--navy); border-color: var(--navy); }
+    .form-label { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .form-check-label { font-size: 0.82rem; color: var(--text); }
+
+    /* ── Submit button ── */
+    .btn-assess {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 0.55rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.3px;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .btn-assess:hover { background: var(--navy-light); box-shadow: 0 4px 12px rgba(27,58,107,0.2); color: #fff; }
+
+    /* ── Score circle ── */
+    .score-circle {
+      width: 110px; height: 110px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 800; margin: 0 auto 1rem;
+      border: 5px solid;
+    }
+
+    /* ── Risk badge ── */
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+    .risk-prohibited  { background: var(--red-bg);   color: var(--red);    border: 1px solid #FECACA; }
+    .risk-noncompliant{ background: var(--amber-bg);  color: var(--amber);  border: 1px solid #FDE68A; }
+    .risk-review      { background: var(--amber-bg);  color: var(--yellow); border: 1px solid #FDE68A; }
+    .risk-compliant   { background: var(--green-bg);  color: var(--green);  border: 1px solid #BBF7D0; }
+
+    /* ── Article pills ── */
+    .article-pill {
+      display: inline-block;
+      background: var(--navy-muted);
+      color: var(--navy);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin: 2px;
+    }
+
+    /* ── Violation / hint items ── */
+    .violation-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--red-bg);
+      border-radius: 6px;
+      margin-bottom: 0.4rem;
+      font-size: 0.82rem;
+      border-left: 3px solid var(--red);
+    }
+    .violation-item code {
+      font-size: 0.75rem;
+      background: #FEE2E2;
+      color: var(--red);
+      padding: 1px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .hint-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      background: #EFF6FF;
+      border-radius: 6px;
+      margin-bottom: 0.4rem;
+      font-size: 0.82rem;
+      color: #1E40AF;
+      border-left: 3px solid #3B82F6;
+    }
+    .ok-msg {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    /* ── Loading ── */
+    #loading { display: none; }
+    .spinner-border { color: var(--navy) !important; width: 2rem; height: 2rem; }
+
+    /* ── Divider ── */
+    .section-divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0 1.5rem; }
+
+    /* ── Footer strip ── */
+    .footer-strip {
+      background: var(--navy);
+      color: rgba(255,255,255,0.5);
+      font-size: 0.72rem;
+      text-align: center;
+      padding: 0.9rem 1rem;
+      margin-top: 3rem;
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <div class="topbar-logo">⚖</div>
+      <div>
+        <div class="topbar-title">AI Ethics OS</div>
+        <div class="topbar-sub">EU AI Act Compliance Engine · v1.0</div>
+      </div>
+    </div>
+    <span class="topbar-badge">Demo</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="page-content" style="padding-top:0; padding-bottom:0;">
+    <h1>EU AI Act Compliance Assessment</h1>
+    <p>Evaluate AI systems against mandatory requirements of the EU AI Act — Articles 5 &amp; 9–15, Annex III risk classifications. Identify gaps and receive actionable remediation steps.</p>
+    <div class="hero-reg">
+      <span class="reg-chip">EU AI Act 2024/1689</span>
+      <span class="reg-chip">Annex III High-Risk Systems</span>
+      <span class="reg-chip">Articles 9 – 15</span>
+      <span class="reg-chip">Article 5 Prohibitions</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main content -->
+<div class="page-content">
+
+  <!-- Scenario selector -->
+  <div class="section-label">Pre-built assessment scenarios</div>
+  <div class="row mb-4 g-3">
+    <div class="col-md-4">
+      <button class="scenario-card" style="--stripe:#B45309;" onclick="runScenario('hr_screening')">
+        <span class="scenario-icon">📋</span>
+        <div class="scenario-title">HR Candidate Screening AI</div>
+        <div class="scenario-sub">Automated CV filtering and ranking system</div>
+        <span class="scenario-tag" style="background:#FFFBEB; color:#B45309;">Annex III §4 — Employment</span>
+      </button>
+    </div>
+    <div class="col-md-4">
+      <button class="scenario-card" style="--stripe:#166534;" onclick="runScenario('credit_scoring')">
+        <span class="scenario-icon">🏦</span>
+        <div class="scenario-title">Credit Scoring AI</div>
+        <div class="scenario-sub">Automated creditworthiness evaluation system</div>
+        <span class="scenario-tag" style="background:#F0FDF4; color:#166534;">Annex III §5 — Essential Services</span>
+      </button>
+    </div>
+    <div class="col-md-4">
+      <button class="scenario-card" style="--stripe:#B91C1C;" onclick="runScenario('social_scoring')">
+        <span class="scenario-icon">🚫</span>
+        <div class="scenario-title">Social Scoring System</div>
+        <div class="scenario-sub">Citizen behavior classification platform</div>
+        <span class="scenario-tag" style="background:#FEF2F2; color:#B91C1C;">Article 5 — Prohibited Practice</span>
+      </button>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- Custom assessment -->
+  <div class="section-label">Custom AI system assessment</div>
+  <div class="panel mb-4">
+    <div class="panel-head">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Define Your AI System
+    </div>
+    <div class="panel-body">
+      <form id="customForm" onsubmit="runCustom(event)">
+        <div class="row g-3 mb-4">
+          <div class="col-md-5">
+            <label class="form-label">System / Model Name</label>
+            <input id="modelId" type="text" class="form-control" value="My AI System" placeholder="e.g. Recruitment Screening Tool v2" />
+          </div>
+        </div>
+        <div class="row g-0" id="checkboxes"></div>
+        <div class="mt-4 pt-2" style="border-top:1px solid var(--border);">
+          <button type="submit" class="btn-assess">Run Compliance Assessment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loading" class="text-center py-5">
+    <div class="spinner-border mb-3" role="status" aria-hidden="true"></div>
+    <p style="color:var(--text-muted); font-size:0.85rem;">Evaluating system against EU AI Act requirements…</p>
+  </div>
+
+  <!-- Results -->
+  <div id="results" style="display:none;">
+    <hr class="section-divider" />
+    <div class="section-label mb-3">Assessment results</div>
+    <div class="row g-4">
+
+      <!-- Score panel -->
+      <div class="col-md-4">
+        <div class="panel h-100">
+          <div class="panel-head">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Overall Compliance Score
+          </div>
+          <div class="panel-body text-center d-flex flex-column align-items-center justify-content-center" style="min-height:240px;">
+            <div id="scoreCircle" class="score-circle">—</div>
+            <h5 id="modelName" class="fw-700 mb-2" style="font-size:0.95rem; font-weight:600;"></h5>
+            <span id="riskBadge" class="risk-badge mb-3"></span>
+            <div id="articlePills"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Radar chart -->
+      <div class="col-md-8">
+        <div class="panel h-100">
+          <div class="panel-head">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 2 17 12 22 22 17 22 7 12 2"/></svg>
+            Per-Article Compliance Breakdown
+          </div>
+          <div class="panel-body" style="position:relative; height:280px;">
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Violations -->
+      <div class="col-md-6">
+        <div class="panel">
+          <div class="panel-head" style="color:#B91C1C;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Compliance Violations
+          </div>
+          <div class="panel-body" id="violationsList">
+            <p class="text-muted mb-0 small">None</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remediation -->
+      <div class="col-md-6">
+        <div class="panel">
+          <div class="panel-head" style="color:#1E40AF;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Recommended Remediation
+          </div>
+          <div class="panel-body" id="remediationList">
+            <p class="text-muted mb-0 small">No actions required</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="panel">
+          <div class="panel-head" style="color:#1B3A6B;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Assessment Analysis
+          </div>
+          <div class="panel-body">
+            <p id="analysisText" class="mb-0" style="font-size:0.84rem; color:var(--text); line-height:1.7; max-width:980px;">Guidance will appear here after the assessment.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       BEHAVIORAL EVIDENCE AUDIT — Phase 2
+       Runs actual test scenarios against a live API, builds hash chain proof.
+  ═══════════════════════════════════════════════════════════════════════ -->
+  <hr class="section-divider" style="margin-top:2.5rem;"/>
+
+  <div class="section-label" style="margin-top:2.5rem; font-size:0.75rem; color:#1B3A6B; font-weight:700; letter-spacing:1.5px;">
+    ⚙ Behavioral Evidence Audit — Live API Test
+  </div>
+  <p style="font-size:0.83rem; color:var(--text-muted); max-width:720px; margin-bottom:1.5rem;">
+    Unlike checkbox self-attestation, this module <strong>runs standardised EU AI Act test scenarios directly against your API</strong>.
+    Every HTTP exchange is cryptographically chained — making retroactive manipulation structurally impossible.
+  </p>
+
+  <!-- Audit Launch Form -->
+  <div class="panel mb-4" id="auditLaunchPanel">
+    <div class="panel-head" style="background:linear-gradient(90deg, #EEF2FF 0%, #F4F6FA 100%); color:#1B3A6B;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Launch Behavioral Evidence Session
+    </div>
+    <div class="panel-body">
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Ethics Identity (auditor email)</label>
+          <input id="auditIdentity" type="email" class="form-control" value="auditor@ethicsos.eu" placeholder="auditor@ethicsos.eu" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Target System Name</label>
+          <input id="auditTargetName" type="text" class="form-control" placeholder="Acme Corp HR Screening API v2" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Target Base URL</label>
+          <input id="auditBaseUrl" type="url" class="form-control" value="http://localhost:18000" placeholder="https://api.acme.com/ai" />
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Auth Header (optional — Bearer token or API key)</label>
+          <input id="auditAuthHeader" type="text" class="form-control" placeholder="Bearer eyJhbGci..." />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Scenarios to run (leave blank = all)</label>
+          <input id="auditScenarios" type="text" class="form-control" placeholder="AIA-ART10-BIAS-GEN-001, AIA-ART13-EXP-001" />
+        </div>
+      </div>
+      <div id="auditLoginWarning" class="alert alert-warning py-2 mb-3" style="font-size:0.82rem; display:none;">
+        <strong>Public edition note.</strong> The live audit runner is intentionally omitted from this portfolio build.
+        <a href="#" onclick="showAuditEditionHelp(); return false;" style="color:inherit; font-weight:600; margin-left:4px;">Why this is omitted →</a>
+      </div>
+      <button class="btn-assess" onclick="launchAudit()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:7px; vertical-align:-2px;"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        Launch Audit Session
+      </button>
+    </div>
+  </div>
+
+  <!-- Live Progress Feed -->
+  <div id="auditProgress" style="display:none;" class="panel mb-4">
+    <div class="panel-head" style="color:#1E40AF;">
+      <span id="auditProgressSpinner" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      <svg id="auditProgressCheck" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+      Evidence Chain — Live Capture
+    </div>
+    <div class="panel-body">
+      <div style="display:flex; gap:1rem; margin-bottom:1.25rem; flex-wrap:wrap;">
+        <div style="flex:1; min-width:120px;">
+          <div class="section-label" style="font-size:0.65rem;">SESSION</div>
+          <code id="auditSessionId" style="font-size:0.75rem; color:var(--navy);">—</code>
+        </div>
+        <div style="flex:1; min-width:120px;">
+          <div class="section-label" style="font-size:0.65rem;">STATUS</div>
+          <span id="auditStatusBadge" class="risk-badge" style="font-size:0.72rem;">pending</span>
+        </div>
+        <div style="flex:1; min-width:120px;">
+          <div class="section-label" style="font-size:0.65rem;">COMPLIANCE SCORE</div>
+          <span id="auditScoreDisplay" style="font-size:1.2rem; font-weight:700; color:var(--navy);">—%</span>
+        </div>
+        <div style="flex:1; min-width:120px;">
+          <div class="section-label" style="font-size:0.65rem;">CHAIN HEAD</div>
+          <code id="auditChainHead" style="font-size:0.68rem; color:var(--text-muted); word-break:break-all;">—</code>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem; padding:0.85rem 1rem; background:#F8FAFC; border:1px solid var(--border); border-radius:8px;">
+        <div class="section-label" style="font-size:0.65rem; margin-bottom:0.35rem;">LIVE COMPLIANCE GUIDANCE</div>
+        <p id="auditLiveGuidance" style="margin:0; font-size:0.8rem; line-height:1.7; color:var(--text);">Guidance will appear as the audit progresses.</p>
+      </div>
+
+      <!-- Evidence blocks stream -->
+      <div id="evidenceStream" style="max-height:320px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; padding:0.75rem; background:#FAFBFD; font-size:0.76rem; font-family:'Courier New', monospace;">
+        <div style="color:var(--text-muted);">Waiting for evidence blocks…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario Results Table -->
+  <div id="auditResults" style="display:none;" class="panel mb-4">
+    <div class="panel-head">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Scenario Evidence Report
+    </div>
+    <div class="panel-body p-0">
+      <table class="table table-sm mb-0" style="font-size:0.8rem;">
+        <thead style="background:#F4F6FA;">
+          <tr>
+            <th class="px-3 py-2">Scenario</th>
+            <th class="px-3 py-2">Article</th>
+            <th class="px-3 py-2">Metric</th>
+            <th class="px-3 py-2">Value</th>
+            <th class="px-3 py-2">Threshold</th>
+            <th class="px-3 py-2">Result</th>
+          </tr>
+        </thead>
+        <tbody id="auditResultsBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Certificate Panel -->
+  <div id="auditCertPanel" style="display:none;" class="panel mb-4">
+    <div class="panel-head" style="background:linear-gradient(90deg, #F0FDF4 0%, #F4F6FA 100%); color:#166534;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      Compliance Certificate
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="section-label" style="font-size:0.65rem;">FINGERPRINT (SHA-256)</div>
+          <code id="certFingerprint" style="font-size:0.78rem; word-break:break-all; color:var(--navy);"></code>
+          <div class="section-label mt-3" style="font-size:0.65rem;">COMPLIANCE GUIDANCE</div>
+          <p id="auditGuidanceText" style="font-size:0.8rem; line-height:1.7; color:var(--text); margin-bottom:0.5rem;">Guidance will appear when a certificate is issued.</p>
+          <div id="auditGuidanceFindings" style="font-size:0.78rem; color:var(--text-muted);"></div>
+          <div class="mt-2 text-muted" style="font-size:0.76rem;">
+            To verify authenticity: remove the <code>fingerprint</code> field, re-serialise with sorted keys, compute SHA-256.
+            The result must match the fingerprint above.
+          </div>
+        </div>
+        <div class="col-md-4 text-end d-flex flex-column justify-content-end align-items-end gap-2">
+          <button class="btn btn-sm" style="border:1.5px solid var(--navy); color:var(--navy); border-radius:7px; font-size:0.78rem;" onclick="downloadCert()">
+            ↓ Download Certificate JSON
+          </button>
+          <button class="btn btn-sm" style="border:1.5px solid #166534; color:#166534; border-radius:7px; font-size:0.78rem;" onclick="runVerify()">
+            ✓ Verify Now
+          </button>
+          <span id="verifyResult" style="font-size:0.75rem;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-content -->
+
+<div class="footer-strip">
+  AI Ethics OS v1.0 · Powered by Sampo AI OS · Compliance tool for EU AI Act (Regulation 2024/1689) · For assessment purposes only · Not legal advice
+</div>
+
+<script>
+const DEFAULT_API = 'http://localhost:18000';
+const API = new URLSearchParams(window.location.search).get('api') || localStorage.getItem('ethicsos.api') || DEFAULT_API;
+
+// Checkboxes for custom form
+const FIELDS = [
+  { key: 'has_risk_management_system',  label: 'Risk Management System (Art. 9)' },
+  { key: 'has_technical_documentation', label: 'Technical Documentation (Art. 11)' },
+  { key: 'logs_decisions',              label: 'Decision Logging (Art. 12)' },
+  { key: 'has_explainability',          label: 'Explainability / Transparency (Art. 13)' },
+  { key: 'has_human_oversight',         label: 'Human Override Capability (Art. 14)' },
+  { key: 'has_accuracy_metrics',        label: 'Accuracy & Robustness Metrics (Art. 15)' },
+  { key: 'has_bias_testing',            label: 'Bias Testing (Art. 10)' },
+  { key: 'uses_demographic_features',   label: 'Uses Demographic Features ⚠️' },
+  { key: 'is_social_scoring',           label: 'Social Scoring System 🚫' },
+  { key: 'is_realtime_biometric_public',label: 'Real-Time Biometrics in Public 🚫' },
+];
+
+(function buildCheckboxes() {
+  const container = document.getElementById('checkboxes');
+  FIELDS.forEach(f => {
+    const col = document.createElement('div');
+    col.className = 'col-12 col-sm-6 col-lg-4 mb-2';
+    col.innerHTML = `
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="${f.key}" name="${f.key}" />
+        <label class="form-check-label" for="${f.key}">${f.label}</label>
+      </div>`;
+    container.appendChild(col);
+  });
+  document.getElementById('checkboxes').className = 'row g-1';
+})();
+
+let chartInstance = null;
+
+function showAuditEditionHelp() {
+  alert(
+    'The full live audit runner and proprietary scenario library are intentionally left out of this public portfolio edition.\n\n'
+    + 'This repository focuses on the scoring product, guidance layer, and selected evidence/certificate concepts without publishing the most sensitive evaluator core.'
+  );
+}
+
+async function runScenario(id) {
+  showLoading(true);
+  try {
+    const res = await fetch(`${API}/demo/run/${id}`, { method: 'POST' });
+    if (!res.ok) throw new Error(await res.text());
+    renderResult(await res.json());
+  } catch (e) {
+    alert(`API error: ${e.message}\n\nMake sure the backend is running:\n  docker compose up`);
+  } finally {
+    showLoading(false);
+  }
+}
+
+async function runCustom(e) {
+  e.preventDefault();
+  const modelId = document.getElementById('modelId').value.trim() || 'Custom AI System';
+  const model_details = {};
+  FIELDS.forEach(f => {
+    model_details[f.key] = document.getElementById(f.key).checked;
+  });
+  showLoading(true);
+  try {
+    const res = await fetch(`${API}/score`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer demo-token' },
+      body: JSON.stringify({ model_id: modelId, model_details }),
+    });
+    if (!res.ok) {
+      // Fallback: run client-side scoring for demo without auth
+      renderResult(clientSideScore(modelId, model_details));
+      return;
+    }
+    renderResult(await res.json());
+  } catch {
+    renderResult(clientSideScore(modelId, model_details));
+  } finally {
+    showLoading(false);
+  }
+}
+
+// Client-side fallback scoring (mirrors server logic, for offline demo)
+function clientSideScore(modelId, details) {
+  const rules = [
+    { id:'AIA-ART5-001',  severity:5, check_key:'is_social_scoring',          expected:false },
+    { id:'AIA-ART5-002',  severity:5, check_key:'is_realtime_biometric_public',expected:false },
+    { id:'AIA-ART9-001',  severity:4, check_key:'has_risk_management_system',  expected:true  },
+    { id:'AIA-ART10-001', severity:4, check_key:'uses_demographic_features',   expected:false },
+    { id:'AIA-ART10-002', severity:3, check_key:'has_bias_testing',            expected:true  },
+    { id:'AIA-ART11-001', severity:3, check_key:'has_technical_documentation', expected:true  },
+    { id:'AIA-ART12-001', severity:3, check_key:'logs_decisions',              expected:true  },
+    { id:'AIA-ART13-001', severity:3, check_key:'has_explainability',          expected:true  },
+    { id:'AIA-ART14-001', severity:4, check_key:'has_human_oversight',         expected:true  },
+    { id:'AIA-ART15-001', severity:3, check_key:'has_accuracy_metrics',        expected:true  },
+  ];
+  const hints = {
+    'AIA-ART5-001':  'Remove social scoring functionality — banned under Art. 5.',
+    'AIA-ART5-002':  'Disable real-time biometric ID in public or obtain judicial authorisation.',
+    'AIA-ART9-001':  'Establish a documented lifecycle risk management system.',
+    'AIA-ART10-001': 'Remove or document bias impact for demographic features.',
+    'AIA-ART10-002': 'Run and document bias testing across all dataset splits.',
+    'AIA-ART11-001': 'Create Annex IV-compliant technical documentation.',
+    'AIA-ART12-001': 'Enable automatic decision logging (min. 6 months retention).',
+    'AIA-ART13-001': 'Implement SHAP/LIME explainability layer for operators.',
+    'AIA-ART14-001': 'Add human-in-the-loop override mechanism.',
+    'AIA-ART15-001': 'Define and publish accuracy KPIs and robustness thresholds.',
+  };
+  let maxW = 0, penalty = 0;
+  const violations = [], remediation_hints = [];
+  rules.forEach(r => {
+    const w = r.severity / 5;
+    maxW += w;
+    const actual = details[r.check_key];
+    const violated = actual !== r.expected;
+    if (violated) { violations.push(r.id); if (hints[r.id]) remediation_hints.push(hints[r.id]); penalty += w; }
+  });
+  const score = Math.round((1 - penalty / maxW) * 100);
+  const prohibited = violations.some(v => v.startsWith('AIA-ART5'));
+  const risk = prohibited ? 'Prohibited' : score < 60 ? 'High-Risk - Non-Compliant' : score < 80 ? 'High-Risk - Needs Review' : 'High-Risk - Compliant';
+  const compliance_guidance = buildAnalysis(risk, score, violations);
+  return { model_id: modelId, current_score: score, risk_classification: risk, compliance_guidance, analysis: compliance_guidance, violation_rules: violations, remediation_hints };
+}
+
+function buildAnalysis(riskClassification, score, violations) {
+  const articleRefs = violations.length
+    ? [...new Set(violations.map(v => v.split('-')[1]))].sort().join(', ')
+    : 'none';
+
+  if (riskClassification === 'Prohibited') {
+    return `This result means the system crosses a prohibited line under the EU AI Act, not merely a high-risk compliance gap. Confirmed violations were detected in ${articleRefs}. Documentation or oversight would not make this acceptable while a prohibited capability remains present. The immediate boundary is to remove the prohibited functionality first and only then reassess the remaining controls.`;
+  }
+
+  if (riskClassification === 'High-Risk - Non-Compliant') {
+    return `This result means the use case may still fall within a high-risk category, but the current control set is materially insufficient. The score is ${score}/100 and confirmed gaps were found in ${articleRefs}. Users should treat this as not ready for regulated deployment. The boundary not to cross is assuming the system is deployable before governance, transparency, oversight, and robustness controls are in place.`;
+  }
+
+  if (riskClassification === 'High-Risk - Needs Review') {
+    return `This result means no prohibited practice was detected in this demo, but meaningful compliance gaps remain. The score is ${score}/100 and the open issues were found in ${articleRefs}. This is not an approval state. The boundary not to cross is treating partial compliance as if it were final clearance.`;
+  }
+
+  if (riskClassification === 'High-Risk - Compliant') {
+    return `This result means the system appears compliant against the controls modeled in this demo, not that it is harmless or exempt from scrutiny. The score is ${score}/100 and no confirmed rule breaches were detected. The boundary not to cross is introducing prohibited capabilities or weakening documentation, logging, explainability, bias testing, oversight, or robustness controls after deployment.`;
+  }
+
+  return 'This result is informational only. Review the underlying rule coverage before relying on the score.';
+}
+
+function renderResult(data) {
+  document.getElementById('results').style.display = 'block';
+
+  // Score circle
+  const circle = document.getElementById('scoreCircle');
+  const score = data.current_score;
+  circle.textContent = score;
+  const rc = data.risk_classification || '';
+  if (rc.includes('Prohibited'))   { circle.style.borderColor = '#B91C1C'; circle.style.color = '#B91C1C'; }
+  else if (rc.includes('Non-Compliant')) { circle.style.borderColor = '#B45309'; circle.style.color = '#B45309'; }
+  else if (rc.includes('Review'))   { circle.style.borderColor = '#92400E'; circle.style.color = '#92400E'; }
+  else { circle.style.borderColor = '#166534'; circle.style.color = '#166534'; }
+
+  document.getElementById('modelName').textContent = data.model_id;
+
+  const badge = document.getElementById('riskBadge');
+  badge.textContent = rc;
+  badge.className = 'risk-badge mb-3';
+  if (rc.includes('Prohibited'))        badge.classList.add('risk-prohibited');
+  else if (rc.includes('Non-Compliant')) badge.classList.add('risk-noncompliant');
+  else if (rc.includes('Review'))        badge.classList.add('risk-review');
+  else                                   badge.classList.add('risk-compliant');
+
+  // Article pills from violations
+  const pills = document.getElementById('articlePills');
+  const articles = [...new Set((data.violation_rules || []).map(v => v.split('-')[1]))];
+  pills.innerHTML = articles.map(a => `<span class="article-pill">${a.replace('ART', 'Art. ')}</span>`).join('');
+
+  // Violations list
+  const vl = document.getElementById('violationsList');
+  vl.innerHTML = data.violation_rules?.length
+    ? data.violation_rules.map(v => `<div class="violation-item"><code>${v}</code> ${ruleLabel(v)}</div>`).join('')
+    : '<div class="ok-msg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No violations detected</div>';
+
+  // Remediation
+  const rl = document.getElementById('remediationList');
+  rl.innerHTML = data.remediation_hints?.length
+    ? data.remediation_hints.map(h => `<div class="hint-item">${h}</div>`).join('')
+    : '<div class="ok-msg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No remediation required</div>';
+
+  document.getElementById('analysisText').textContent = data.compliance_guidance || data.analysis || buildAnalysis(rc, score, data.violation_rules || []);
+
+  // Chart — category breakdown
+  const categories = ['Risk Mgmt', 'Data Gov.', 'Docs', 'Record-Keep.', 'Transparency', 'Human Oversight', 'Accuracy'];
+  const violated = new Set(data.violation_rules || []);
+  const catMap = {
+    'Risk Mgmt':       ['AIA-ART9-001'],
+    'Data Gov.':       ['AIA-ART10-001','AIA-ART10-002'],
+    'Docs':            ['AIA-ART11-001'],
+    'Record-Keep.':    ['AIA-ART12-001'],
+    'Transparency':    ['AIA-ART13-001'],
+    'Human Oversight': ['AIA-ART14-001'],
+    'Accuracy':        ['AIA-ART15-001'],
+  };
+  const scores = categories.map(cat => {
+    const rules = catMap[cat];
+    const violations = rules.filter(r => violated.has(r)).length;
+    return Math.round((1 - violations / rules.length) * 100);
+  });
+
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(document.getElementById('radarChart').getContext('2d'), {
+    type: 'radar',
+    data: {
+      labels: categories,
+      datasets: [{
+        label: 'Compliance %',
+        data: scores,
+        backgroundColor: 'rgba(27,58,107,0.08)',
+        borderColor: '#1B3A6B',
+        pointBackgroundColor: '#1B3A6B',
+        pointBorderColor: '#fff',
+        pointRadius: 4,
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { r: { min: 0, max: 100, ticks: { color: '#5A6580', stepSize: 25, backdropColor: 'transparent', font: { size: 10 } }, grid: { color: '#DDE3EF' }, pointLabels: { color: '#1A202C', font: { size: 11, family: 'Inter' } }, angleLines: { color: '#DDE3EF' } } },
+      plugins: { legend: { display: false } },
+    },
+  });
+
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showLoading(show) {
+  document.getElementById('loading').style.display = show ? 'block' : 'none';
+  document.getElementById('results').style.display = show ? 'none' : document.getElementById('results').style.display;
+}
+
+const RULE_LABELS = {
+  'AIA-ART5-001': 'Prohibited — Social Scoring (Art. 5)',
+  'AIA-ART5-002': 'Prohibited — Real-Time Biometrics (Art. 5)',
+  'AIA-ART9-001': 'Risk Management System absent (Art. 9)',
+  'AIA-ART10-001':'Demographic features without bias mitigation (Art. 10)',
+  'AIA-ART10-002':'Bias testing not documented (Art. 10)',
+  'AIA-ART11-001':'Technical documentation missing (Art. 11)',
+  'AIA-ART12-001':'Automatic decision logging absent (Art. 12)',
+  'AIA-ART13-001':'No explainability layer (Art. 13)',
+  'AIA-ART14-001':'Human override capability missing (Art. 14)',
+  'AIA-ART15-001':'Accuracy / robustness metrics not defined (Art. 15)',
+};
+function ruleLabel(id) {
+  return RULE_LABELS[id] ? `<span style="color:#5A6580; margin-left:6px;">${RULE_LABELS[id]}</span>` : '';
+}
+
+// ═══════════════════════════════════════════════════════════
+// BEHAVIORAL EVIDENCE AUDIT
+// ═══════════════════════════════════════════════════════════
+
+let _currentCert = null;
+let _pollInterval = null;
+
+async function launchAudit() {
+  document.getElementById('auditLoginWarning').style.display = '';
+  showAuditEditionHelp();
+}
+
+function startAuditUI(session, token) {
+  document.getElementById('auditProgress').style.display = '';
+  document.getElementById('auditResults').style.display = 'none';
+  document.getElementById('auditCertPanel').style.display = 'none';
+  document.getElementById('auditProgressSpinner').style.display = '';
+  document.getElementById('auditProgressCheck').style.display = 'none';
+  document.getElementById('auditSessionId').textContent = session.id;
+  document.getElementById('auditStatusBadge').textContent = session.status;
+  document.getElementById('auditScoreDisplay').textContent = '—%';
+  document.getElementById('auditChainHead').textContent = '—';
+  document.getElementById('auditLiveGuidance').textContent = session.compliance_guidance || 'The audit is starting. Guidance will update as evidence arrives.';
+  document.getElementById('evidenceStream').innerHTML = '<div style="color:var(--text-muted);">Session launched — executing test scenarios…</div>';
+
+  if (_pollInterval) clearInterval(_pollInterval);
+  _pollInterval = setInterval(() => pollSession(session.id, token), 2000);
+}
+
+async function pollSession(sessionId, token) {
+  try {
+    const [sRes, eRes] = await Promise.all([
+      fetch(`${API}/audit/sessions/${sessionId}`, { headers: { Authorization: `Bearer ${token}` } }),
+      fetch(`${API}/audit/sessions/${sessionId}/evidence`, { headers: { Authorization: `Bearer ${token}` } }),
+    ]);
+
+    if (!sRes.ok) return;
+    const session = await sRes.json();
+    const blocks  = eRes.ok ? await eRes.json() : [];
+
+    updateAuditStatus(session, blocks);
+
+    if (session.status === 'completed' || session.status === 'error') {
+      clearInterval(_pollInterval);
+      _pollInterval = null;
+      onAuditComplete(session, blocks, token);
+    }
+  } catch (_) {}
+}
+
+function updateAuditStatus(session, blocks) {
+  document.getElementById('auditStatusBadge').textContent = session.status;
+  document.getElementById('auditLiveGuidance').textContent = session.compliance_guidance || 'Guidance is not available yet.';
+  if (session.compliance_score != null) {
+    document.getElementById('auditScoreDisplay').textContent = `${session.compliance_score}%`;
+  }
+  if (session.chain_head_hash) {
+    document.getElementById('auditChainHead').textContent = session.chain_head_hash.slice(0, 16) + '…';
+  }
+
+  // Stream blocks
+  const stream = document.getElementById('evidenceStream');
+  if (blocks.length) {
+    stream.innerHTML = blocks.map(b => {
+      const icon = b.result === 'PASS' ? '✓' : b.result === 'FAIL' ? '✗' : b.result === 'ERROR' ? '!' : '·';
+      const color = b.result === 'PASS' ? '#166534' : b.result === 'FAIL' ? '#B91C1C' : b.result === 'ERROR' ? '#B45309' : '#5A6580';
+      const blockShort = b.block_hash ? b.block_hash.slice(0, 12) + '…' : '?';
+      return `<div style="border-bottom:1px solid #EEF2FF; padding:3px 0; color:${color};">`
+        + `[${String(b.sequence).padStart(3,'0')}] `
+        + `<span style="color:#color">${icon}</span> `
+        + `<span style="color:var(--text-muted);">${b.eu_article}</span> `
+        + `${b.scenario_id} `
+        + `<span style="color:#888;">${b.request_method}</span> `
+        + `<span style="color:var(--text-muted); font-size:0.7rem;">hash:${blockShort}</span>`
+        + `</div>`;
+    }).join('');
+    stream.scrollTop = stream.scrollHeight;
+  }
+}
+
+async function onAuditComplete(session, blocks, token) {
+  document.getElementById('auditProgressSpinner').style.display = 'none';
+  document.getElementById('auditProgressCheck').style.display = '';
+
+  // Build scenario results table
+  const tbody = document.getElementById('auditResultsBody');
+  const summaryBlocks = blocks.filter(b => b.metric_name);
+  // De-duplicate by scenario_id, keep worst
+  const byScenario = {};
+  summaryBlocks.forEach(b => {
+    if (!byScenario[b.scenario_id] || b.result === 'FAIL') byScenario[b.scenario_id] = b;
+  });
+  tbody.innerHTML = Object.values(byScenario).map(b => {
+    const pass = b.result === 'PASS';
+    const badge = pass
+      ? '<span style="color:#166534; font-weight:600; background:#F0FDF4; padding:2px 8px; border-radius:4px; font-size:0.72rem;">PASS</span>'
+      : '<span style="color:#B91C1C; font-weight:600; background:#FEF2F2; padding:2px 8px; border-radius:4px; font-size:0.72rem;">FAIL</span>';
+    return `<tr>
+      <td class="px-3 py-2"><code style="font-size:0.75rem;">${b.scenario_id}</code></td>
+      <td class="px-3 py-2" style="color:var(--navy); font-weight:500;">${b.eu_article}</td>
+      <td class="px-3 py-2" style="color:var(--text-muted);">${b.metric_name || '—'}</td>
+      <td class="px-3 py-2" style="font-weight:600;">${b.metric_value != null ? b.metric_value.toFixed(3) : '—'}</td>
+      <td class="px-3 py-2" style="color:var(--text-muted);">${b.metric_threshold != null ? `≥ ${b.metric_threshold}` : '—'}</td>
+      <td class="px-3 py-2">${badge}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="px-3 py-3 text-center text-muted">No scenario results yet</td></tr>';
+
+  document.getElementById('auditResults').style.display = '';
+
+  // Request certificate if completed
+  if (session.status === 'completed') {
+    try {
+      const cRes = await fetch(`${API}/audit/sessions/${session.id}/certificate`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (cRes.ok) {
+        _currentCert = await cRes.json();
+        document.getElementById('certFingerprint').textContent = _currentCert.fingerprint || '—';
+        const guidance = _currentCert.compliance?.compliance_guidance || {};
+        document.getElementById('auditGuidanceText').textContent = guidance.summary || 'No guidance available.';
+        const findings = guidance.top_findings || [];
+        document.getElementById('auditGuidanceFindings').innerHTML = findings.length
+          ? findings.map(item => `<div style="margin-bottom:4px;"><strong>${item.name}</strong> (${item.article}) - ${item.metric}: ${item.value} vs ${item.threshold}</div>`).join('') + `<div style="margin-top:8px; color:var(--text);"><strong>Boundary:</strong> ${guidance.hard_boundary || ''}</div>`
+          : `<div style="color:var(--text);"><strong>Boundary:</strong> ${guidance.hard_boundary || 'No boundary guidance available.'}</div>`;
+        document.getElementById('auditCertPanel').style.display = '';
+      }
+    } catch (_) {}
+  }
+}
+
+function downloadCert() {
+  if (!_currentCert) return;
+  const blob = new Blob([JSON.stringify(_currentCert, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ethics-certificate-${_currentCert.audit_session?.session_id?.slice(0,8) || 'unknown'}.json`;
+  a.click();
+}
+
+async function runVerify() {
+  if (!_currentCert) return;
+  const el = document.getElementById('verifyResult');
+  el.textContent = 'Verifying…';
+  try {
+    const res = await fetch(`${API}/audit/verify/certificate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(_currentCert),
+    });
+    const data = await res.json();
+    el.textContent = data.valid ? '✓ Genuine' : '✗ Invalid';
+    el.style.color = data.valid ? '#166534' : '#B91C1C';
+    el.style.fontWeight = '600';
+  } catch (e) {
+    el.textContent = `Error: ${e.message}`;
+    el.style.color = '#B91C1C';
+  }
+}
+</script>
+</body>
+</html>
